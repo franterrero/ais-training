@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIS Training Portal</title>
+<meta name="description" content="Advanced International Services — 2026 Integrated Training Program. Prepared by Audit · TD-ACT, External Advisor.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#134090; --deep:#0B2454; --orange:#FF7E2E; --light:#F2F5FA; --border:#D8E1EF;
+  --ink:#16213A; --muted:#5B6782; --bg:#F2F5FA; --card:#FFFFFF;
+  --ok:#1E7A46; --ok-bg:#E3F4EA; --bad:#B3261E; --bad-bg:#FCE8E6; --warn:#8A5A00; --warn-bg:#FFF3DC;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Poppins,Inter,sans-serif;color:var(--deep);margin:0;line-height:1.25}
+button{font:inherit;cursor:pointer}
+a{color:var(--navy)}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+.hidden{display:none!important}
+
+/* top bar */
+.top{background:var(--deep);color:#fff}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:60px}
+.badge{background:#fff;border-radius:10px;padding:4px 6px;display:flex}
+.badge img{height:32px;width:auto;display:block}
+.top .t1{font-family:Poppins,sans-serif;font-weight:600;font-size:15px;letter-spacing:.2px}
+.top .t2{font-size:12px;opacity:.75}
+.top .sp{flex:1}
+.top .who{font-size:13px;opacity:.9;text-align:right}
+.linkbtn{background:none;border:0;color:#fff;opacity:.85;text-decoration:underline;padding:0;font-size:12px}
+.accent{height:3px;background:linear-gradient(90deg,var(--orange) 0 22%,transparent 22%)}
+
+main{padding:28px 0 56px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 20px;font-weight:600;background:var(--navy);color:#fff;transition:background .15s}
+.btn:hover{background:var(--deep)}
+.btn:disabled{background:#9AA8C3;cursor:not-allowed}
+.btn.orange{background:var(--orange)} .btn.orange:hover{background:#E86A1C}
+.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--border)} .btn.ghost:hover{background:var(--light)}
+.err{background:var(--bad-bg);color:var(--bad);border-radius:10px;padding:10px 14px;font-size:14px;margin-top:14px}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 14px;font-size:14px}
+
+/* auth */
+.auth{max-width:440px;margin:24px auto 0}
+.auth .hero{text-align:center;margin-bottom:22px}
+.auth .hero img{height:84px;margin-bottom:10px}
+.auth h1{font-size:24px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--light);border-radius:10px;padding:4px;margin-bottom:18px}
+.tabs button{border:0;background:none;border-radius:8px;padding:9px;font-weight:600;color:var(--muted)}
+.tabs button.on{background:#fff;color:var(--deep);box-shadow:0 1px 2px rgba(11,36,84,.12)}
+label{display:block;font-size:13px;font-weight:600;color:var(--deep);margin:12px 0 6px}
+input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;font:inherit;background:#fff;color:var(--ink)}
+input:focus{outline:2px solid rgba(19,64,144,.25);border-color:var(--navy)}
+.foot{text-align:center;font-size:12px;color:var(--muted);margin-top:22px}
+
+/* home */
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.head h1{font-size:24px}
+.prog{min-width:220px}
+.bar{height:10px;background:#DCE4F2;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--orange);border-radius:99px;transition:width .4s}
+.list{display:grid;gap:10px}
+.mod{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:left;width:100%;color:inherit}
+button.mod:hover{border-color:var(--navy)}
+.mod.locked{opacity:.55;cursor:default}
+.num{flex:none;width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-family:Poppins,sans-serif;font-weight:700;background:var(--light);color:var(--navy)}
+.mod.passed .num{background:var(--ok-bg);color:var(--ok)}
+.mod.next .num{background:var(--orange);color:#fff}
+.mod .mt{flex:1;min-width:0}
+.mod .mt b{display:block;font-weight:600;color:var(--deep)}
+.mod .mt span{font-size:13px;color:var(--muted)}
+.pill{flex:none;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--light);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.go{background:#FFE7D6;color:#B4510E} .pill.bad{background:var(--bad-bg);color:var(--bad)}
+
+/* module */
+.back{background:none;border:0;color:var(--navy);font-weight:600;padding:0;margin-bottom:14px}
+.vid{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin:16px 0}
+.vid > div,.vid iframe{position:absolute;inset:0;width:100%;height:100%}
+.watch{display:flex;align-items:center;gap:12px;margin:6px 0 18px}
+.watch .bar{flex:1}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.step{border:1px solid var(--border);border-radius:12px;padding:14px}
+.step b{display:block;font-family:Poppins,sans-serif;color:var(--deep)}
+.step.done{background:var(--ok-bg);border-color:#BFE3CD}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;color:var(--muted)}
+.qstem{font-size:18px;font-weight:600;color:var(--deep);margin:6px 0 18px;font-family:Inter,sans-serif}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;color:var(--ink)}
+.opt:hover{border-color:var(--navy)}
+.opt.sel{border-color:var(--navy);background:#EAF0FB;box-shadow:inset 3px 0 0 var(--navy)}
+.qnav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+.dots{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.dots i{width:22px;height:6px;border-radius:99px;background:#DCE4F2}
+.dots i.a{background:var(--navy)} .dots i.c{background:var(--orange)}
+
+/* result */
+.score{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.ring{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;font-family:Poppins,sans-serif;font-weight:700;font-size:28px}
+.ring.ok{background:var(--ok-bg);color:var(--ok)} .ring.bad{background:var(--bad-bg);color:var(--bad)}
+.rev{border-top:1px solid var(--border);padding:14px 0}
+.rev .s{font-weight:600;color:var(--deep)}
+.rev .a{font-size:14px;margin-top:4px}
+.rev .f{font-size:14px;color:var(--muted);margin-top:4px}
+.tag{font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;margin-right:6px}
+.tag.ok{background:var(--ok-bg);color:var(--ok)} .tag.bad{background:var(--bad-bg);color:var(--bad)}
+.spin{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:s .8s linear infinite}
+.spin.dark{border-color:rgba(19,64,144,.2);border-top-color:var(--navy)}
+@keyframes s{to{transform:rotate(360deg)}}
+.center{text-align:center;padding:48px 0}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:0 16px 32px}
+
+@media (max-width:560px){
+  .top .t2{display:none}
+  .steps{grid-template-columns:1fr}
+  .card{padding:18px}
+  .qstem{font-size:16px}
+  .head h1{font-size:21px}
+  .mod{flex-wrap:wrap;row-gap:8px}
+  .mod .mt{flex:1 1 calc(100% - 60px)}
+  .mod .pill{margin-left:56px;white-space:normal}
+  .prog{min-width:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="wrap">
+    <span class="badge"><img src="ais-logo.png" alt="AIS"></span>
+    <div><div class="t1">AIS Training Portal</div><div class="t2">2026 Integrated Training Program · BASC · CTPAT · EHS</div></div>
+    <div class="sp"></div>
+    <div class="who hidden" id="who"><div id="whoName"></div><button class="linkbtn" id="logout">Sign out</button></div>
+  </div>
+</div>
+<div class="accent"></div>
+
+<main><div class="wrap" id="app"><div class="center"><span class="spin dark"></span></div></div></main>
+<footer>Advanced International Services · Prepared by Audit · TD-ACT — External Advisor<br>Training records are kept under SOP-HR-002 and FRM-HR-001.</footer>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbzzlq79FaM02-sX2ZJgNOC9stgBtsD9zp0J4Q_ZCJydxV5-wTssBoJnkkKBrM-oOWoA/exec';
+const app = document.getElementById('app');
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return mem[k] ?? null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){ mem[k]=v; } },
+  del(k){ try { localStorage.removeItem(k); } catch(e){ delete mem[k]; } }
+};
+const mem = {};
+let S = { token: store.get('ais_token'), state: null };
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function api(action, data = {}) {
+  const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, token: S.token, ...data }) });
+  const j = await r.json();
+  if (!j.ok && j.error === 'SESSION') { signOut(); throw new Error(j.message); }
+  return j;
+}
+function signOut(){ store.del('ais_token'); S = { token:null, state:null }; document.getElementById('who').classList.add('hidden'); renderAuth(); }
+document.getElementById('logout').onclick = async () => { try { await api('logout'); } catch(e){} signOut(); };
+function busy(btn, on, label){ btn.disabled = on; btn.innerHTML = on ? '<span class="spin"></span>' : label; }
+function fmtDate(iso){ return iso ? new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''; }
+
+/* ---------------- Auth ---------------- */
+function renderAuth(mode = 'in') {
+  app.innerHTML = `
+  <div class="auth">
+    <div class="hero"><img src="ais-logo.png" alt="Advanced International Services">
+      <h1>2026 Integrated Training Program</h1>
+      <p class="muted">Fifteen short video modules with a knowledge check each. Your progress is saved — you can stop and continue at any time.</p></div>
+    <div class="card">
+      <div class="tabs"><button data-m="in" class="${mode==='in'?'on':''}">Sign in</button><button data-m="new" class="${mode==='new'?'on':''}">First time here</button></div>
+      <form id="f" autocomplete="on">
+        <label for="email">Work e-mail</label>
+        <input id="email" type="email" required autocomplete="username" placeholder="name@advancedintl.com" value="${esc(store.get('ais_email')||'')}">
+        <label for="pw">${mode==='new' ? 'Create a password (8+ characters)' : 'Password'}</label>
+        <input id="pw" type="password" required minlength="${mode==='new'?8:1}" autocomplete="${mode==='new'?'new-password':'current-password'}">
+        ${mode==='new' ? '<label for="pw2">Repeat password</label><input id="pw2" type="password" required autocomplete="new-password">' : ''}
+        <div style="margin-top:18px"><button class="btn" style="width:100%" id="go">${mode==='new'?'Create my access':'Sign in'}</button></div>
+        <div id="msg"></div>
+      </form>
+    </div>
+    <p class="foot">${mode==='new' ? 'Use your AIS work e-mail. Only authorized employees can register.' : 'Forgot your password? Ask the program administrator to reset it.'}</p>
+  </div>`;
+  app.querySelectorAll('.tabs button').forEach(b => b.onclick = () => renderAuth(b.dataset.m));
+  document.getElementById('f').onsubmit = async ev => {
+    ev.preventDefault();
+    const btn = document.getElementById('go'), msg = document.getElementById('msg'), label = btn.textContent;
+    const email = document.getElementById('email').value.trim(), pw = document.getElementById('pw').value;
+    msg.innerHTML = '';
+    if (mode === 'new' && pw !== document.getElementById('pw2').value) { msg.innerHTML = '<div class="err">The two passwords do not match.</div>'; return; }
+    busy(btn, true);
+    try {
+      const j = await api(mode === 'new' ? 'register' : 'login', { email, password: pw });
+      if (!j.ok) { msg.innerHTML = `<div class="err">${esc(j.message)}</div>`; busy(btn,false,label); return; }
+      S.token = j.token; store.set('ais_token', j.token); store.set('ais_email', email);
+      loadHome();
+    } catch (e) { msg.innerHTML = '<div class="err">Could not reach the training server. Check your connection and try again.</div>'; busy(btn,false,label); }
+  };
+}
+
+/* ---------------- Home ---------------- */
+async function loadHome() {
+  app.innerHTML = '<div class="center"><span class="spin dark"></span></div>';
+  try { const j = await api('state'); if (!j.ok) throw new Error(j.message); S.state = j; renderHome(); }
+  catch (e) { if (S.token) app.innerHTML = `<div class="card"><div class="err">${esc(e.message || 'Could not load your progress.')}</div><p><button class="btn ghost" onclick="loadHome()">Try again</button></p></div>`; }
+}
+function pillFor(m) {
+  if (m.status === 'passed') return `<span class="pill ok">Passed · ${m.score}/10</span>`;
+  if (m.status === 'locked') return `<span class="pill">Locked</span>`;
+  if (m.status === 'soon') return `<span class="pill">Coming soon</span>`;
+  if (m.status === 'quiz') return `<span class="pill go">Knowledge check · ${m.attemptsLeft} attempt${m.attemptsLeft>1?'s':''} left</span>`;
+  if (m.mustRewatch) return `<span class="pill bad">Re-watch video</span>`;
+  return `<span class="pill go">Start</span>`;
+}
+function renderHome() {
+  const st = S.state, done = st.modules.filter(m => m.status === 'passed').length, total = st.modules.length;
+  const who = document.getElementById('who'); who.classList.remove('hidden'); document.getElementById('whoName').textContent = st.name;
+  const next = st.modules.find(m => m.status !== 'passed');
+  app.innerHTML = `
+  <div class="head">
+    <div><p class="muted small" style="margin:0 0 4px">Welcome, ${esc(st.name.split(' ')[0])}</p><h1>Your training path</h1></div>
+    <div class="prog"><div class="small muted" style="display:flex;justify-content:space-between"><span>${done} of ${total} modules passed</span><b style="color:var(--deep)">${Math.round(done/total*100)}%</b></div><div class="bar" style="margin-top:6px"><i style="width:${done/total*100}%"></i></div></div>
+  </div>
+  ${done === total ? '<div class="card" style="margin-bottom:14px;background:var(--ok-bg);border-color:#BFE3CD"><h2 style="font-size:18px;color:var(--ok)">Program completed</h2><p style="margin:6px 0 0">You have passed all fifteen modules. Your record has been filed for the AIS training program.</p></div>' : ''}
+  <div class="list">${st.modules.map(m => {
+    const isNext = next && m.num === next.num && m.status !== 'locked' && m.status !== 'soon';
+    const clickable = m.status !== 'locked' && m.status !== 'soon';
+    const sub = m.status === 'passed' ? `Completed ${fmtDate(m.passedOn)}` : `${m.track} · Module ${m.num}`;
+    return `<${clickable?'button':'div'} class="mod ${m.status} ${isNext?'next':''}" ${clickable?`data-n="${m.num}"`:''}>
+      <span class="num">${m.status==='passed'?'✓':m.num}</span>
+      <span class="mt"><b>${esc(m.title)}</b><span>${sub}</span></span>${pillFor(m)}</${clickable?'button':'div'}>`;
+  }).join('')}</div>
+  <p class="small muted" style="margin-top:18px">Modules open in order. Each one: watch the video in full, then answer 10 questions — 8 correct to pass. You have two attempts; if both are missed, watching the video again opens two new attempts with different questions.</p>`;
+  app.querySelectorAll('button.mod').forEach(b => b.onclick = () => openModule(b.dataset.n));
+}
+
+/* ---------------- Module + video ---------------- */
+let player = null, tick = null, ytReady = null;
+function loadYT() {
+  if (ytReady) return ytReady;
+  ytReady = new Promise(res => { window.onYouTubeIframeAPIReady = res; const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s); });
+  return ytReady;
+}
+function stopVideo(){ clearInterval(tick); tick = null; try { player && player.destroy(); } catch(e){} player = null; }
+
+async function openModule(num) {
+  stopVideo();
+  const m = S.state.modules.find(x => x.num === num);
+  const needVideo = m.status === 'video';
+  const cycleKey = `ais_w_${S.state.email}_${num}_${m.cycle + 1}`;
+  let seen = new Set(JSON.parse(store.get(cycleKey) || '[]'));
+  app.innerHTML = `
+  <button class="back" id="bk">← All modules</button>
+  <div class="card">
+    <p class="small muted" style="margin:0">${m.track} · Module ${m.num}</p>
+    <h1 style="font-size:22px;margin-top:4px">${esc(m.title)}</h1>
+    ${m.mustRewatch ? '<div class="note" style="margin-top:14px">Both attempts were used. Watch the video again in full to unlock two new attempts with different questions.</div>' : ''}
+    <div class="vid"><div id="yt"></div></div>
+    <div class="watch ${needVideo?'':'hidden'}" id="wbox"><span class="small muted" id="wtxt">Watched 0%</span><div class="bar"><i id="wbar" style="width:0"></i></div></div>
+    <div class="steps">
+      <div class="step ${needVideo?'':'done'}" id="s1"><b>1 · Watch the video</b><span class="small muted" id="s1t">${needVideo ? 'Play it through to the end. Skipping ahead does not count.' : 'Done for this round.'}</span></div>
+      <div class="step ${m.status==='passed'?'done':''}"><b>2 · Knowledge check</b><span class="small muted">${m.status==='passed' ? `Passed with ${m.score}/10.` : `10 questions · 8 to pass · ${needVideo ? 'opens after the video' : `${m.attemptsLeft} attempt${m.attemptsLeft>1?'s':''} left`}`}</span></div>
+    </div>
+    <div id="act">${m.status==='quiz' ? '<button class="btn orange" id="sq">Start the knowledge check</button>' : m.status==='passed' ? '<span class="pill ok">Module passed — you can re-watch the video any time.</span>' : '<button class="btn" disabled>Start the knowledge check</button>'}</div>
+    <div id="msg"></div>
+  </div>`;
+  document.getElementById('bk').onclick = () => { stopVideo(); renderHome(); };
+  const sq = document.getElementById('sq'); if (sq) sq.onclick = () => startQuiz(num);
+
+  await loadYT();
+  let started = false, last = -1, reported = false;
+  player = new YT.Player('yt', { videoId: m.video, playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+    events: { onStateChange: e => {
+      if (e.data === YT.PlayerState.PLAYING && !started && needVideo) { started = true; api('videoStart', { module: num }).catch(()=>{}); }
+    }}});
+  if (!needVideo) return;
+  const show = () => {
+    const d = player.getDuration ? player.getDuration() : 0; if (!d) return;
+    const pct = Math.min(100, Math.round(seen.size / Math.floor(d) * 100));
+    document.getElementById('wbar').style.width = pct + '%';
+    document.getElementById('wtxt').textContent = `Watched ${pct}%`;
+    return { d, pct };
+  };
+  tick = setInterval(async () => {
+    if (!player || !player.getPlayerState || player.getPlayerState() !== YT.PlayerState.PLAYING) return;
+    const t = Math.floor(player.getCurrentTime());
+    if (last >= 0 && t >= last && t - last <= 2) { for (let i = last; i <= t; i++) seen.add(i); }
+    last = t;
+    store.set(cycleKey, JSON.stringify([...seen]));
+    const r = show();
+    if (r && r.pct >= 92 && !reported) {
+      reported = true;
+      try {
+        const j = await api('videoDone', { module: num, watched: seen.size, duration: Math.floor(r.d) });
+        if (j.ok) {
+          document.getElementById('s1').classList.add('done'); document.getElementById('s1t').textContent = 'Done for this round.';
+          const st = await api('state'); S.state = st; const mm = st.modules.find(x => x.num === num);
+          document.getElementById('act').innerHTML = '<button class="btn orange" id="sq">Start the knowledge check</button>';
+          document.getElementById('sq').onclick = () => startQuiz(num);
+          document.querySelector('.steps .step:nth-child(2) .small').textContent = `10 questions · 8 to pass · ${mm.attemptsLeft} attempts left`;
+        } else { reported = false; document.getElementById('msg').innerHTML = `<div class="err">${esc(j.message)}</div>`; }
+      } catch (e) { reported = false; }
+    }
+  }, 1000);
+  setTimeout(show, 1500);
+}
+
+/* ---------------- Quiz ---------------- */
+let Q = null;
+async function startQuiz(num) {
+  stopVideo();
+  app.innerHTML = '<div class="center"><span class="spin dark"></span><p class="muted">Preparing your questions…</p></div>';
+  const j = await api('startQuiz', { module: num });
+  if (!j.ok) { app.innerHTML = `<div class="card"><div class="err">${esc(j.message)}</div><p><button class="btn ghost" id="bk">Back</button></p></div>`; document.getElementById('bk').onclick = () => openModule(num); return; }
+  Q = { num, ...j, i: 0, ans: {}, t0: Date.now() };
+  renderQ();
+}
+function renderQ() {
+  const q = Q.questions[Q.i], n = Q.questions.length, answered = Object.keys(Q.ans).length;
+  app.innerHTML = `
+  <div class="card">
+    <div class="qhead"><span>Module ${Q.num} · ${esc(Q.title)}</span><span>Attempt ${Q.attemptNo} of ${Q.attemptsPerCycle}</span></div>
+    <div class="dots">${Q.questions.map((x,k)=>`<i class="${k===Q.i?'c':(Q.ans[x.id]!==undefined?'a':'')}"></i>`).join('')}</div>
+    <p class="small muted" style="margin:0">Question ${Q.i+1} of ${n}</p>
+    <div class="qstem">${esc(q.stem)}</div>
+    ${q.options.map(o => `<button class="opt ${Q.ans[q.id]===o.i?'sel':''}" data-i="${o.i}">${esc(o.t)}</button>`).join('')}
+    <div class="qnav">
+      <button class="btn ghost" id="prev" ${Q.i===0?'disabled':''}>Back</button>
+      ${Q.i < n-1 ? `<button class="btn" id="next" ${Q.ans[q.id]===undefined?'disabled':''}>Next</button>` : `<button class="btn orange" id="sub" ${answered<n?'disabled':''}>Submit answers</button>`}
+    </div>
+    <div id="msg"></div>
+  </div>`;
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => { Q.ans[q.id] = Number(b.dataset.i); renderQ(); });
+  document.getElementById('prev').onclick = () => { Q.i--; renderQ(); };
+  const nx = document.getElementById('next'); if (nx) nx.onclick = () => { Q.i++; renderQ(); };
+  const sb = document.getElementById('sub'); if (sb) sb.onclick = submitQ;
+  window.scrollTo({ top: 0 });
+}
+async function submitQ() {
+  const sb = document.getElementById('sub'); busy(sb, true);
+  try {
+    const r = await api('submitQuiz', { attemptId: Q.attemptId, answers: Q.ans });
+    if (!r.ok) { document.getElementById('msg').innerHTML = `<div class="err">${esc(r.message)}</div>`; busy(sb,false,'Submit answers'); return; }
+    renderResult(r);
+  } catch (e) { document.getElementById('msg').innerHTML = '<div class="err">Could not send your answers. Check your connection and press Submit again — nothing has been lost.</div>'; busy(sb,false,'Submit answers'); }
+}
+function renderResult(r) {
+  const next = r.pass ? 'Great work — the next module is now open.' : r.attemptsLeft > 0 ? `You have ${r.attemptsLeft} more attempt in this round. It will use different questions.` : 'Both attempts in this round are used. Watch the video again to unlock two new attempts.';
+  app.innerHTML = `
+  <div class="card">
+    <div class="score"><div class="ring ${r.pass?'ok':'bad'}">${r.score}/${r.max}</div>
+      <div><h1 style="font-size:22px">${r.pass ? 'Passed' : 'Not passed yet'}</h1><p class="muted" style="margin:4px 0 0">Pass mark: 8 correct. ${next}</p></div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 6px">
+      <button class="btn" id="home">Back to my path</button>
+      ${!r.pass ? `<button class="btn ghost" id="again">${r.attemptsLeft>0 ? 'Try again' : 'Watch the video again'}</button>` : ''}
+    </div>
+    <h2 style="font-size:16px;margin:22px 0 4px">Review</h2>
+    ${r.review.map(x => `<div class="rev"><div class="s">${esc(x.stem)}</div>
+      <div class="a"><span class="tag ${x.correct?'ok':'bad'}">${x.correct?'Correct':'Incorrect'}</span>Your answer: ${esc(x.chosen)}</div>
+      <div class="f">${esc(x.feedback)}</div><div class="f small">${esc(x.reference)}</div></div>`).join('')}
+  </div>`;
+  document.getElementById('home').onclick = loadHome;
+  const ag = document.getElementById('again');
+  if (ag) ag.onclick = async () => { const st = await api('state'); S.state = st; openModule(Q.num); };
+  window.scrollTo({ top: 0 });
+}
+
+/* ---------------- Boot ---------------- */
+if (API.startsWith('PASTE')) app.innerHTML = '<div class="card"><h2>Portal being configured</h2><p class="muted">The training server address has not been set yet.</p></div>';
+else if (S.token) loadHome(); else renderAuth();
+</script>
+</body>
+</html>
