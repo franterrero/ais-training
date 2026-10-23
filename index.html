@@ -23,6 +23,7 @@ h1,h2,h3{font-family:Poppins,Inter,sans-serif;color:var(--deep);margin:0;line-he
 button{font:inherit;cursor:pointer}
 a{color:var(--navy)}
 .wrap{max-width:880px;margin:0 auto;padding:0 16px}
+.wrap.wide{max-width:1280px}
 .hidden{display:none!important}
 
 /* top bar */
@@ -83,8 +84,12 @@ button.mod:hover{border-color:var(--navy)}
 
 /* module */
 .back{background:none;border:0;color:var(--navy);font-weight:600;padding:0;margin-bottom:14px}
-.vid{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin:16px 0}
+.vid{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin:16px auto;width:min(100%,calc((100vh - 300px)*16/9));min-width:min(100%,560px)}
 .vid > div,.vid iframe{position:absolute;inset:0;width:100%;height:100%}
+.vid:fullscreen{border-radius:0}
+.vtools{display:flex;justify-content:flex-end;margin:-6px 0 6px}
+.vtools button{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--navy)}
+.vtools button:hover{background:var(--light)}
 .watch{display:flex;align-items:center;gap:12px;margin:6px 0 18px}
 .watch .bar{flex:1}
 .steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
@@ -171,6 +176,7 @@ function fmtDate(iso){ return iso ? new Date(iso).toLocaleDateString('en-US',{mo
 
 /* ---------------- Auth ---------------- */
 function renderAuth(mode = 'in') {
+  app.classList.remove('wide');
   app.innerHTML = `
   <div class="auth">
     <div class="hero"><img src="ais-logo.png" alt="Advanced International Services">
@@ -222,6 +228,7 @@ function pillFor(m) {
   return `<span class="pill go">Start</span>`;
 }
 function renderHome() {
+  app.classList.remove('wide');
   const st = S.state, done = st.modules.filter(m => m.status === 'passed').length, total = st.modules.length;
   const who = document.getElementById('who'); who.classList.remove('hidden'); document.getElementById('whoName').textContent = st.name;
   const next = st.modules.find(m => m.status !== 'passed');
@@ -250,7 +257,12 @@ function loadYT() {
   ytReady = new Promise(res => { window.onYouTubeIframeAPIReady = res; const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s); });
   return ytReady;
 }
-function stopVideo(){ clearInterval(tick); tick = null; try { player && player.destroy(); } catch(e){} player = null; }
+function stopVideo(){ clearInterval(tick); tick = null; try { player && player.destroy(); } catch(e){} player = null; app.classList.remove('wide'); }
+function goFull(){
+  const el = document.getElementById('vbox'); if (!el) return;
+  const f = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (f) f.call(el); else { const i = el.querySelector('iframe'); i && i.webkitEnterFullscreen && i.webkitEnterFullscreen(); }
+}
 
 async function openModule(num) {
   stopVideo();
@@ -258,13 +270,15 @@ async function openModule(num) {
   const needVideo = m.status === 'video';
   const cycleKey = `ais_w_${S.state.email}_${num}_${m.cycle + 1}`;
   let seen = new Set(JSON.parse(store.get(cycleKey) || '[]'));
+  app.classList.add('wide');
   app.innerHTML = `
   <button class="back" id="bk">← All modules</button>
   <div class="card">
     <p class="small muted" style="margin:0">${m.track} · Module ${m.num}</p>
     <h1 style="font-size:22px;margin-top:4px">${esc(m.title)}</h1>
     ${m.mustRewatch ? '<div class="note" style="margin-top:14px">Both attempts were used. Watch the video again in full to unlock two new attempts with different questions.</div>' : ''}
-    <div class="vid"><div id="yt"></div></div>
+    <div class="vid" id="vbox"><div id="yt"></div></div>
+    <div class="vtools"><button type="button" id="fsb">⛶ Full screen</button></div>
     <div class="watch ${needVideo?'':'hidden'}" id="wbox"><span class="small muted" id="wtxt">Watched 0%</span><div class="bar"><i id="wbar" style="width:0"></i></div></div>
     <div class="steps">
       <div class="step ${needVideo?'':'done'}" id="s1"><b>1 · Watch the video</b><span class="small muted" id="s1t">${needVideo ? 'Play it through to the end. Skipping ahead does not count.' : 'Done for this round.'}</span></div>
@@ -275,10 +289,11 @@ async function openModule(num) {
   </div>`;
   document.getElementById('bk').onclick = () => { stopVideo(); renderHome(); };
   const sq = document.getElementById('sq'); if (sq) sq.onclick = () => startQuiz(num);
+  document.getElementById('fsb').onclick = goFull;
 
   await loadYT();
   let started = false, last = -1, reported = false;
-  player = new YT.Player('yt', { videoId: m.video, playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+  player = new YT.Player('yt', { videoId: m.video, playerVars: { rel: 0, playsinline: 1, fs: 1, iv_load_policy: 3, origin: location.origin },
     events: { onStateChange: e => {
       if (e.data === YT.PlayerState.PLAYING && !started && needVideo) { started = true; api('videoStart', { module: num }).catch(()=>{}); }
     }}});
